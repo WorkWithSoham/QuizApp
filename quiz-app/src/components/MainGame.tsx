@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { getQuizQuestions, Difficulty, QuestionState } from "../API";
 import QuestionCard from "./question";
 
-type AnswerObject = {
+export type AnswerObject = {
     question: string;
     options: string[];
     correct: boolean;
     correctAnswer: string;
+    answer: string;
 }
 
 export default function MainGame() {
@@ -43,12 +44,13 @@ export default function MainGame() {
             const correctAnswer = questions[number].correct_answer
             const question = questions[number].question
             const options = questions[number].answers
+            const answer = userAnswer
 
             if (correct) {
                 setScore(prevScore => prevScore + 1)
             }
 
-            const answerObject: AnswerObject = { correct, correctAnswer, question, options }
+            const answerObject: AnswerObject = { correct, correctAnswer, question, options, answer }
             setUserAnswers(prevUserAnswers => [...prevUserAnswers, answerObject])
         }
     }
@@ -64,7 +66,7 @@ export default function MainGame() {
 
     return (
         <div>
-            {!gameOver ? <h3>Score: {score}</h3> : null}
+            {!gameOver ? <h2 style={{ color: "wheat" }}>Score: {score}</h2> : null}
             {!loading && !gameOver &&
                 <QuestionCard
                     questionNumber={number + 1}
@@ -73,6 +75,7 @@ export default function MainGame() {
                     answers={questions[number].answers}
                     userAnswer={userAnswers ? userAnswers[number] : undefined}
                     callback={checkAnswer}
+                    correctAnswer={questions[number].correct_answer}
                 />
             }
             {loading ? <p>Loading...</p> : null}
